@@ -5,10 +5,11 @@ from time import gmtime, strftime, time
 import bottom
 
 from handlers import command, action
+from singletons.config import Config
+from singletons import osu_api
 
-config = configparser.ConfigParser()
 
-config.read("config.ini")
+config = Config().config
 
 bot = bottom.Client(host=config['irc']['host'], port=int(config['irc']['port']), ssl=False)
 loop = asyncio.get_event_loop()
@@ -30,9 +31,9 @@ async def keepalive():
     :return:
     """
     while True:
-        await asyncio.sleep(5)
+        await asyncio.sleep(15)
         if time() - bot.last_message >= 120:
-            print("got nothing from the irc server in the last minute. the connection is probably dead.")
+            print("got nothing from the irc server in the last two minutes. the connection is probably dead.")
             await reconnect()
 
 
@@ -160,9 +161,9 @@ async def test_message(host, target, message, **kwargs):
             host,
             target,
             host,
-            message[8:1]
+            message[8:-1]
         ))
-        return await send_message(host, await action.handle(host, message[8:1]))
+        return await send_message(host, await action.handle(host, message[8:-1]))
 
     print("[%s] <%s=>%s> %s" % (
         strftime("%H:%M:%S", gmtime()),
@@ -177,6 +178,7 @@ async def test_message(host, target, message, **kwargs):
 
 if __name__ == "__main__":
     print("connecting...")
+    loop.create_task(osu_api.init())
     loop.create_task(bot.connect())
     loop.create_task(keepalive())
     loop.run_forever()

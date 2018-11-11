@@ -24,5 +24,4 @@ async def handle(user, message):
     for regex, handler in handlers.items():
         if regex.match(message):
             return await handler(user, message)
-        else:
-            return "No such command. Use the !help command for more information."
+    return "No such command. Use the !help command for more information."
