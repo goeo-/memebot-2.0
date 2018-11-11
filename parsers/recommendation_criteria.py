@@ -34,7 +34,10 @@ mods_list = ['NF', 'EZ', 'TD', 'HD', 'HR', 'SD', 'DT', 'RX', 'HT', 'NC', 'FL', '
 
 
 def stringify_mods(mods_enabled):
-    return "".join([name for index, name in enumerate(mods_list) if 2 ** index & mods_enabled])
+    mods = [name for index, name in enumerate(mods_list) if 2 ** index & mods_enabled]
+    if "NC" in mods:
+        mods.remove("DT")
+    return "".join(mods)
 
 
 def modsify_string(mod_string):
