@@ -1,5 +1,6 @@
 from recommend.user import get_user_best
 from recommend.pp import get_pps
+from recommend.target import NoPlaysException
 
 
 async def future_you(user, beatmap_id, enabled_mods):
@@ -20,6 +21,9 @@ async def future_you(user, beatmap_id, enabled_mods):
         aim_pp += aim_pp_t
         speed_pp += speed_pp_t
         acc_pp += acc_pp_t
+
+    if top_plays_amount == 0:
+        raise NoPlaysException
 
     aim_pp = aim_pp / top_plays_amount
     speed_pp = speed_pp / top_plays_amount

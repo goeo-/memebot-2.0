@@ -118,7 +118,7 @@ def privmsg(**kwargs):
     :return:
     """
     # Don't handle our own messages
-    if kwargs["host"] == NICK:
+    if kwargs["nick"] == NICK:
         return
     # Respond directly to direct messages
     if kwargs["target"] == NICK:
@@ -142,11 +142,11 @@ async def send_message(target, message):
 
 
 @bot.on('DIRECT_MESSAGE')
-async def test_message(host, target, message, **kwargs):
+async def test_message(nick, target, message, **kwargs):
     """
     Runs when a direct message (pm, /q) is received.
     Logs the message to the console, and handles commands.
-    :param host:
+    :param nick:
     :param target:
     :param message:
     :param kwargs:
@@ -157,23 +157,23 @@ async def test_message(host, target, message, **kwargs):
     if message.startswith("\x01ACTION "):
         print("[%s] <%s=>%s> *%s %s*" % (
             strftime("%H:%M:%S", gmtime()),
-            host,
+            nick,
             target,
-            host,
+            nick,
             message[8:-1]
         ))
-        return await send_message(host, await action.handle(host, message[8:-1]))
+        return await send_message(nick, await action.handle(nick, message[8:-1]))
 
     print("[%s] <%s=>%s> %s" % (
         strftime("%H:%M:%S", gmtime()),
-        host,
+        nick,
         target,
         message
     ))
 
     # only handle the message if it's a command
     if message.startswith(config["bot"]["prefix"]):
-        return await send_message(host, await command.handle(host, message[len(config["bot"]["prefix"]):]))
+        return await send_message(nick, await command.handle(nick, message[len(config["bot"]["prefix"]):]))
 
 if __name__ == "__main__":
     print("connecting...")

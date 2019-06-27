@@ -12,6 +12,10 @@ class Target:
         self.target_total_pp_max = total_max
 
 
+class NoPlaysException(Exception):
+    pass
+
+
 async def target(user_best):
     # set target aim, acc, speed, total, total_max pp for user.
     # make the target wider as the user gets better
@@ -32,6 +36,9 @@ async def target(user_best):
         aim_pp += aim_pp_t
         speed_pp += speed_pp_t
         acc_pp += acc_pp_t
+
+    if top_plays_amount == 0:
+        raise NoPlaysException
 
     total_pp = total_pp / top_plays_amount
     aim_pp = aim_pp / top_plays_amount
