@@ -1,8 +1,8 @@
-from recommendation.recommendation import get_user_best
-from recommendation.pp import get_pps
+from recommend.recommendation import get_user_best
+from recommend.pp import get_pps
 
 
-def future_you(user, beatmap_id, enabled_mods):
+async def future_you(user, beatmap_id, enabled_mods):
     user_best = await get_user_best(user)
     top_plays_amount = 0
     total_pp = 0

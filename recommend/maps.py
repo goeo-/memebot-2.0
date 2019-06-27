@@ -1,7 +1,7 @@
 from singletons.db import *
 from peewee import JOIN
-from recommendation.future_you import future_you
-from recommendation.recommendation import get_user_best
+from recommend.future_you import future_you
+from recommend.recommendation import get_user_best
 from functools import reduce
 import operator
 import time
@@ -47,7 +47,7 @@ async def find_map(criteria):
         for play in user_best:
             if play['beatmap_id'] == result.beatmap_id and play['enabled_mods'] & result.enabled_mods:
                 continue
-        return result.beatmap_id, result.enabled_mods, future_you(criteria.user, result.beatmap_id, result.enabled_mods)
+        return result.beatmap_id, result.enabled_mods, await future_you(criteria.user, result.beatmap_id, result.enabled_mods)
 
 
 class CouldNotFindMapException(Exception):

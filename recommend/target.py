@@ -1,4 +1,4 @@
-from recommendation.pp import get_pps
+from recommend.pp import get_pps
 
 
 class Target:

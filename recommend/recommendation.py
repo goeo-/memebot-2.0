@@ -2,9 +2,9 @@ from singletons.config import Config
 from singletons.osu_api import OsuAPI
 from parsers.recommendation_criteria import stringify_mods
 from time import strftime, gmtime, time
-from recommendation.target import target, widen_target
-from recommendation.maps import find_map, CouldNotFindMapException
-from recommendation.pp import get_pp_spread
+from recommend.target import target, widen_target
+from recommend.maps import find_map, CouldNotFindMapException
+from recommend.pp import get_pp_spread
 
 
 user_top_plays = {
@@ -57,7 +57,7 @@ class Recommendation:
             beatmap_id, enabled_mods, future_you = await find_map(criteria)
         except CouldNotFindMapException:
             criteria.targets = widen_target(criteria.targets)
-            # if it still can't find a map, the exception will be raised to the recommendation handler.
+            # if it still can't find a map, the exception will be raised to the recommend handler.
             beatmap_id, enabled_mods, future_you = await find_map(criteria)
 
         pp_95, pp_98, pp_99, pp_100 = await get_pp_spread(beatmap_id, enabled_mods)

@@ -1,6 +1,6 @@
 from parsers.recommendation_criteria import parse_criteria
-from recommendation.recommendation import Recommendation
-from recommendation.maps import CouldNotFindMapException
+from recommend.recommendation import Recommendation
+from recommend.maps import CouldNotFindMapException
 
 
 async def handler(user, message):
