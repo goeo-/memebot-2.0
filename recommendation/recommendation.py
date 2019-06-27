@@ -16,13 +16,13 @@ config = Config().config
 
 def time_for_mods(time, mods_enabled):
     if mods_enabled & 64 == 64:
-        return int(time*0.75)
+        return int(time * 0.75)
     return time
 
 
 def bpm_for_mods(bpm, mods_enabled):
     if mods_enabled & 64 == 64:
-        return int(bpm*1.5)
+        return int(bpm * 1.5)
     else:
         return int(bpm)
 
@@ -51,7 +51,7 @@ class Recommendation:
     @classmethod
     async def get(cls, criteria):
         user_best = await get_user_best(criteria.user)
-        criteria.targets = target(user_best)
+        criteria.targets = await target(user_best)
 
         try:
             beatmap_id, enabled_mods, future_you = await find_map(criteria)
@@ -60,7 +60,7 @@ class Recommendation:
             # if it still can't find a map, the exception will be raised to the recommendation handler.
             beatmap_id, enabled_mods, future_you = await find_map(criteria)
 
-        pp_95, pp_98, pp_99, pp_100 = get_pp_spread(beatmap_id, enabled_mods)
+        pp_95, pp_98, pp_99, pp_100 = await get_pp_spread(beatmap_id, enabled_mods)
 
         beatmap = await OsuAPI().call("get_beatmaps", {"b": beatmap_id, "m": 0})
         return cls(beatmap_id=beatmap_id, beatmap=beatmap, enabled_mods=enabled_mods,

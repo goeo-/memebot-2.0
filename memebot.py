@@ -1,5 +1,4 @@
 import asyncio
-import configparser
 from time import gmtime, strftime, time
 
 import bottom
@@ -74,7 +73,7 @@ async def connect(**kwargs):
 
     # Try to join the default channels
     for channel in CHANNELS:
-        print("joining %s"%channel)
+        print("joining %s" % channel)
         bot.send('JOIN', channel=channel)
 
 
@@ -178,7 +177,6 @@ async def test_message(host, target, message, **kwargs):
 
 if __name__ == "__main__":
     print("connecting...")
-    loop.create_task(osu_api.init())
     loop.create_task(bot.connect())
     loop.create_task(keepalive())
     loop.run_forever()
