@@ -1,4 +1,4 @@
-from recommend.recommendation import get_user_best
+from recommend.user import get_user_best
 from recommend.pp import get_pps
 
 
@@ -25,7 +25,7 @@ async def future_you(user, beatmap_id, enabled_mods):
     speed_pp = speed_pp / top_plays_amount
     acc_pp = acc_pp / top_plays_amount
 
-    _, aim_pp_t, speed_pp_t, acc_pp_t = await get_pps(score["beatmap_id"], int(score["enabled_mods"]),
+    _, aim_pp_t, speed_pp_t, acc_pp_t = await get_pps(beatmap_id, enabled_mods,
                                                       None, None, None, None)
 
     return min(aim_pp, aim_pp_t) + min(speed_pp, speed_pp_t) + min(acc_pp, acc_pp_t)

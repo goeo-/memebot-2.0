@@ -1,7 +1,7 @@
 from singletons.db import *
 from peewee import JOIN
 from recommend.future_you import future_you
-from recommend.recommendation import get_user_best
+from recommend.user import get_user_best
 from functools import reduce
 import operator
 import time

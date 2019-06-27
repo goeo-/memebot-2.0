@@ -1,15 +1,11 @@
 from singletons.config import Config
 from singletons.osu_api import OsuAPI
 from parsers.recommendation_criteria import stringify_mods
-from time import strftime, gmtime, time
+from time import strftime, gmtime
 from recommend.target import target, widen_target
 from recommend.maps import find_map, CouldNotFindMapException
 from recommend.pp import get_pp_spread
-
-
-user_top_plays = {
-    # "username": (cache time, [top plays])
-}
+from recommend.user import get_user_best
 
 config = Config().config
 
@@ -25,16 +21,6 @@ def bpm_for_mods(bpm, mods_enabled):
         return int(bpm * 1.5)
     else:
         return int(bpm)
-
-
-async def get_user_best(username):
-    if username in user_top_plays:
-        if time() <= user_top_plays[username][0] + 600:
-            return user_top_plays[username][1]
-
-    best = await OsuAPI().call("get_user_best", {"type": "string", "limit": 100, "u": username})
-    user_top_plays[username] = (time(), best)
-    return user_top_plays[username][1]
 
 
 class Recommendation:
