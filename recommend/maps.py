@@ -24,10 +24,10 @@ async def find_map(criteria):
             clauses.append((Map.enabled_mods.bin_and(criteria.mods)))
 
     query = Map.select()\
-               .join(Recommended, JOIN.LEFT_OUTER, on=(Recommended.beatmap_id == Map.beatmap_id &
-                                                       Recommended.mods.bin_and(Map.enabled_mods) &
-                                                       Recommended.username == criteria.user &
-                                                       Recommended.date + 2592000 < time.time()))\
+               .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
+                                                       (Recommended.mods.bin_and(Map.enabled_mods)) &
+                                                       (Recommended.username == criteria.user) &
+                                                       (Recommended.date + 2592000 < time.time())))\
                .where(reduce(operator.and_, clauses))
 
     async with Database().user_locks[criteria.user]:
