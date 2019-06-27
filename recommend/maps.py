@@ -43,7 +43,7 @@ async def find_map(criteria):
         # if so, add to recommended, continue
         async with Database().user_locks[criteria.user]:
             await Database().objects.create(Recommended, beatmap_id=result.beatmap_id, mods=result.enabled_mods,
-                                            username=criteria.user)
+                                            username=criteria.user, date=datetime.now())
         for play in user_best:
             if play['beatmap_id'] == result.beatmap_id and play['enabled_mods'] & result.enabled_mods:
                 continue
