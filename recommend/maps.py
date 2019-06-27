@@ -4,7 +4,7 @@ from recommend.future_you import future_you
 from recommend.user import get_user_best
 from functools import reduce
 import operator
-import time
+from datetime import datetime, timedelta
 
 
 async def find_map(criteria):
@@ -27,7 +27,7 @@ async def find_map(criteria):
                .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
                                                        (Recommended.mods.bin_and(Map.enabled_mods)) &
                                                        (Recommended.username == criteria.user) &
-                                                       (Recommended.date + 2592000 < time.time())))\
+                                                       (Recommended.date + timedelta(days=30) < datetime.now())))\
                .where(reduce(operator.and_, clauses))
 
     async with Database().user_locks[criteria.user]:
