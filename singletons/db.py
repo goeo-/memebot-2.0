@@ -45,4 +45,5 @@ class Recommended(BaseModel):
     username = CharField(max_length=100, index=True)
     beatmap_id = IntegerField(index=True)
     mods = IntegerField(index=True)
-    date = TimestampField()
+    date = IntegerField()  # TODO: this is actually a timestamp but peewee errors saying
+    #                              it's an "Incorrect datetime value"
