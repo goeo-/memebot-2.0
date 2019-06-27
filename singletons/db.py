@@ -9,14 +9,12 @@ from peewee import Model, IntegerField, DoubleField, CharField, TimestampField
 @singleton
 class Database:
     def __init__(self):
-        loop = asyncio.new_event_loop()
-
         self.database = PooledMySQLDatabase(Config().config['sql']['db'], user=Config().config['sql']['user'],
                                             password=Config().config['sql']['password'],
                                             host=Config().config['sql']['host'],
                                             port=int(Config().config['sql']['port']), max_connections=10)
 
-        self.objects = Manager(self.database, loop=loop)
+        self.objects = Manager(self.database, loop=asyncio.get_event_loop())
         self.objects.database.allow_sync = False
 
         self.user_locks = defaultdict(asyncio.Lock)
@@ -39,6 +37,7 @@ class Map(BaseModel):
 
     class Meta:
         table_name = 'maps'
+        db_table = 'maps'
 
 
 class Recommended(BaseModel):
