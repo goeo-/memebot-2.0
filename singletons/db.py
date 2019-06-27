@@ -45,4 +45,4 @@ class Recommended(BaseModel):
     username = CharField(max_length=100, index=True)
     beatmap_id = IntegerField(index=True)
     mods = IntegerField(index=True)
-    date = IntegerField()
+    date = TimestampField()
