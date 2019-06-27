@@ -42,8 +42,11 @@ async def get_pp_spread(beatmap_id, enabled_mods):
     pp99 = ezpp_pp(ez)
     ezpp_set_accuracy_percent(ez, 100)
     pp100 = ezpp_pp(ez)
+    stars = ezpp_stars(ez)
+    ar = ezpp_ar(ez)
+    od = ezpp_od(ez)
     ezpp_free(ez)
-    return pp95, pp98, pp99, pp100
+    return pp95, pp98, pp99, pp100, stars, ar, od
 
 
 async def get_pps(beatmap_id, enabled_mods, maxcombo, countmiss, count50, count100):

@@ -24,7 +24,7 @@ def bpm_for_mods(bpm, mods_enabled):
 
 
 class Recommendation:
-    def __init__(self, beatmap_id, beatmap, enabled_mods, future_you, pp_95, pp_98, pp_99, pp_100):
+    def __init__(self, beatmap_id, beatmap, enabled_mods, future_you, pp_95, pp_98, pp_99, pp_100, stars, ar, od):
         self.beatmap_id = beatmap_id
         self.beatmap = beatmap
         self.enabled_mods = enabled_mods
@@ -33,6 +33,9 @@ class Recommendation:
         self.pp_98 = pp_98
         self.pp_99 = pp_99
         self.pp_100 = pp_100
+        self.stars = stars
+        self.ar = ar
+        self.od = od
 
     @classmethod
     async def get(cls, criteria):
@@ -46,7 +49,7 @@ class Recommendation:
             # if it still can't find a map, the exception will be raised to the recommend handler.
             beatmap_id, enabled_mods, future_you = await find_map(criteria)
 
-        pp_95, pp_98, pp_99, pp_100 = await get_pp_spread(beatmap_id, enabled_mods)
+        pp_95, pp_98, pp_99, pp_100, stars, ar, od = await get_pp_spread(beatmap_id, enabled_mods)
 
         beatmap = await OsuAPI().call("get_beatmaps", {"b": beatmap_id, "m": 0})
 
@@ -57,7 +60,8 @@ class Recommendation:
             return await Recommendation.get(criteria)
 
         return cls(beatmap_id=beatmap_id, beatmap=beatmap, enabled_mods=enabled_mods,
-                   future_you=future_you, pp_95=pp_95, pp_98=pp_98, pp_99=pp_99, pp_100=pp_100)
+                   future_you=future_you, pp_95=pp_95, pp_98=pp_98, pp_99=pp_99, pp_100=pp_100,
+                   stars=stars, ar=ar, od=od)
 
     def __str__(self):
         message = "[%s%s %s - %s [%s]] " % (config["osu"]["beatmap_url"], self.beatmap_id, self.beatmap["artist"],
