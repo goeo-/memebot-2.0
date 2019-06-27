@@ -49,6 +49,13 @@ class Recommendation:
         pp_95, pp_98, pp_99, pp_100 = await get_pp_spread(beatmap_id, enabled_mods)
 
         beatmap = await OsuAPI().call("get_beatmaps", {"b": beatmap_id, "m": 0})
+
+        try:
+            beatmap = beatmap[0]
+        except KeyError:
+            print('Had an issue with map:', beatmap_id)
+            return await Recommendation.get(criteria)
+
         return cls(beatmap_id=beatmap_id, beatmap=beatmap, enabled_mods=enabled_mods,
                    future_you=future_you, pp_95=pp_95, pp_98=pp_98, pp_99=pp_99, pp_100=pp_100)
 
