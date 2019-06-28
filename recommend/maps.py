@@ -36,7 +36,7 @@ async def find_map(criteria):
     while True:
         async with Database().user_locks[criteria.user]:
             try:
-                result = await Database().objects.execute(query)[0]
+                result = [x for x in await Database().objects.execute(query)][0]
             except Map.DoesNotExist:
                 raise CouldNotFindMapException
             except KeyError:
