@@ -28,17 +28,18 @@ async def find_map(criteria):
                                                        (Recommended.mods.bin_and(Map.enabled_mods)) &
                                                        (Recommended.username == criteria.user) &
                                                        (Recommended.date > datetime.now() - timedelta(days=30))))\
-               .where(reduce(operator.and_, clauses))
-
-    async with Database().user_locks[criteria.user]:
-        try:
-            results = await Database().objects.execute(query)
-        except Map.DoesNotExist:
-            raise CouldNotFindMapException
+               .where(reduce(operator.and_, clauses))\
+               .limit(1)
 
     user_best = await get_user_best(criteria.user)
 
-    for result in results:
+    while True:
+        async with Database().user_locks[criteria.user]:
+            try:
+                result = await Database().objects.execute(query)
+            except Map.DoesNotExist:
+                raise CouldNotFindMapException
+
         # check if in top plays of user
         # if so, add to recommended, continue
         async with Database().user_locks[criteria.user]:
@@ -47,7 +48,9 @@ async def find_map(criteria):
         for play in user_best:
             if play['beatmap_id'] == result.beatmap_id and play['enabled_mods'] & result.enabled_mods:
                 continue
-        return result.beatmap_id, result.enabled_mods, await future_you(criteria.user, result.beatmap_id, result.enabled_mods)
+        return result.beatmap_id, result.enabled_mods, await future_you(criteria.user,
+                                                                        result.beatmap_id,
+                                                                        result.enabled_mods)
 
 
 class CouldNotFindMapException(Exception):
