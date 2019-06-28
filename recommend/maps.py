@@ -25,7 +25,7 @@ async def find_map(criteria):
 
     query = Map.select()\
                .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
-                                                       (Recommended.mods.bin_and(Map.enabled_mods)) &
+                                                       (Recommended.mods.bin_and(Map.enabled_mods) == Recommended) &
                                                        (Recommended.username == criteria.user) &
                                                        (Recommended.date > datetime.now() - timedelta(days=30))))\
                .where(reduce(operator.and_, clauses))\
@@ -46,7 +46,8 @@ async def find_map(criteria):
         # check if in top plays of user, if in there continue
 
         for play in user_best:
-            if play['beatmap_id'] == result.beatmap_id and play['enabled_mods'] & result.enabled_mods:
+            if play['beatmap_id'] == result.beatmap_id and \
+               (play['enabled_mods'] & result.enabled_mods == play['enabled_mods']):
                 continue
         return result.beatmap_id, result.enabled_mods, await future_you(criteria.user,
                                                                         result.beatmap_id,
