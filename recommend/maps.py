@@ -28,7 +28,8 @@ async def find_map(criteria):
                                                        (Recommended.mods.bin_and(Map.enabled_mods) == Recommended.mods) &
                                                        (Recommended.username == criteria.user) &
                                                        (Recommended.date > datetime.now() - timedelta(days=30))))\
-               .where(reduce(operator.and_, clauses))\
+               .where(reduce(operator.and_, clauses)) \
+               .order_by(Map.farminess.desc()) \
                .limit(1)
 
     user_best = await get_user_best(criteria.user)
