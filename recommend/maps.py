@@ -25,7 +25,7 @@ async def find_map(criteria):
 
     query = Map.select()\
                .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
-                                                       (Recommended.mods.bin_and(Map.enabled_mods) == Recommended) &
+                                                       (Recommended.mods.bin_and(Map.enabled_mods) == Recommended.mods) &
                                                        (Recommended.username == criteria.user) &
                                                        (Recommended.date > datetime.now() - timedelta(days=30))))\
                .where(reduce(operator.and_, clauses))\
