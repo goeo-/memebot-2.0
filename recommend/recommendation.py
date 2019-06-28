@@ -70,7 +70,7 @@ class Recommendation:
         if self.enabled_mods:
             message += "+%s " % stringify_mods(self.enabled_mods)
 
-        message += "future you: %s | 95%%: %spp | 98%%: %spp  | 99%%: %spp | 100%%: %spp | " % (
+        message += "future you: %s | 95%%: %spp | 98%%: %spp | 99%%: %spp | 100%%: %spp | " % (
             round(self.future_you, 2),
             round(self.pp_95, 2),
             round(self.pp_98, 2),
