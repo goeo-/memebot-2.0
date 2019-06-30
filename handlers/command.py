@@ -1,9 +1,10 @@
 import re
-from handlers import recommend, help
+from handlers import recommend, help, reset
 
 # Set what handles which regexes
 handlers = {
     r'^r(?:ecommend)?(?: .*)?$': recommend.handler,
+    r'^reset$': reset.handler,
     r'^h(?:elp)?(?: .*)?$': help.handler
 }
 
