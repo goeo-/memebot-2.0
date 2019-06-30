@@ -45,12 +45,9 @@ class Recommendation:
         try:
             beatmap_id, enabled_mods, future_you = await find_map(criteria)
         except CouldNotFindMapException:
-            criteria.targets = widen_target(criteria.targets)
+            widen_target(criteria.targets)
             # if it still can't find a map, the exception will be raised to the recommend handler.
-            try:
-                beatmap_id, enabled_mods, future_you = await find_map(criteria)
-            except CouldNotFindMapException:
-                return 'I could not find a map fitting this criteria :('
+            beatmap_id, enabled_mods, future_you = await find_map(criteria)
 
         pp_95, pp_98, pp_99, pp_100, stars, ar, od = await get_pp_spread(beatmap_id, enabled_mods)
 

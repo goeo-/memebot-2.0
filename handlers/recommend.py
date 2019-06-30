@@ -9,7 +9,7 @@ async def handler(user, message):
     try:
         recommendation = await Recommendation.get(criteria)
     except CouldNotFindMapException:
-        return 'Could not find a map for you. Feel free to try !reset'
+        return 'Could not find a map fitting that criteria :(. Feel free to try !reset'
     except NoPlaysException:
         return 'Please play a few maps and try again!'
     return str(recommendation)
