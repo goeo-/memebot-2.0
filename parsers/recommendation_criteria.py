@@ -4,14 +4,15 @@ mods_regex = re.compile(r'(?:EZ|HD|HR|DT|HT|NC|FL)+')
 
 
 class RecommendationCriteria:
-    __slots__ = ["user", "mods", "max_creation_date", "max_length", "max_combo", "max_ar", "max_od", "max_cs",
+    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_ar", "max_od", "max_cs",
                  "max_bpm", "min_creation_date", "min_length", "min_combo", "min_ar", "min_od", "min_cs", "min_bpm",
                  "targets"]
 
-    def __init__(self, user, mods=0, max_creation_date=0, max_length=0, max_combo=0, max_ar=0, max_od=0, max_cs=0,
+    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_ar=0, max_od=0, max_cs=0,
                  max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_ar=0, min_od=0, min_cs=0, min_bpm=0):
         self.user = user
         self.mods = mods
+        self.notmods = notmods
         self.max_creation_date = max_creation_date
         self.max_length = max_length
         self.max_combo = max_combo
@@ -54,24 +55,19 @@ def parse_criteria(user, message):
     if len(objects) < 2:
         return criteria
 
-    # if objects[1] is not a flag, parse it as mods.
-    if not any(x in objects[1] for x in "<>="):
-        if objects[1].upper() == "NOMOD":
-            criteria.mods = -1
-            second_object_is_mods = True
-        elif mods_regex.match(objects[1].upper()):
-            criteria.mods = modsify_string(objects[1].upper())
-            if criteria.mods & 512:
-                criteria.mods |= 64
-            second_object_is_mods = True
+    for object in objects[1:]:
+        if not any(x in object for x in "<>="):
+            if object.upper() == "NOMOD":
+                criteria.mods = -1
+            elif object.upper().startswith('NOT:') and mods_regex.match(object.upper()[4:]):
+                criteria.notmods = modsify_string(object.upper())
+                if criteria.notmods & 512:
+                    criteria.notmods |= 64
+            elif mods_regex.match(object.upper()):
+                criteria.mods = modsify_string(object.upper())
+                if criteria.mods & 512:
+                    criteria.mods |= 64
 
-    # try parsing objects[2:] as the rest of the flags. objects[1:] if objects[1] wasn't mods
-    try:
-        objects_left = objects[2:] if second_object_is_mods else objects[1:]
-    except KeyError:
-        return criteria
-
-    for object in objects_left:
         for x in ("<=", ">=", "<", ">", "="):
             if x not in object:
                 continue
