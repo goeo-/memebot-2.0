@@ -21,7 +21,7 @@ async def find_map(criteria):
         if criteria.mods == -1:
             clauses.append((Map.enabled_mods == 0))
         else:
-            clauses.append((Map.enabled_mods.bin_and(criteria.mods) == criteria.mods))
+            clauses.append((Map.enabled_mods.bin_and(criteria.mods & 1370) == criteria.mods & 1370))
 
     if criteria.notmods:
         clauses.append((Map.enabled_mods.bin_and(criteria.notmods) == 0))
@@ -30,7 +30,7 @@ async def find_map(criteria):
                .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
                                                        (Recommended.mods.bin_and(Map.enabled_mods) == Recommended.mods) &
                                                        (Recommended.username == criteria.user) &
-                                                       (Recommended.date > datetime.now() - timedelta(days=30))))\
+                                                       (Recommended.date > datetime.now() - timedelta(days=30)))) \
                .where(reduce(operator.and_, clauses)) \
                .order_by(Map.farminess.desc()) \
                .limit(1)
