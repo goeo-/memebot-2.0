@@ -24,7 +24,7 @@ async def find_map(criteria):
             clauses.append((Map.enabled_mods.bin_and(criteria.mods) == criteria.mods))
 
     if criteria.notmods:
-        clauses.append((Map.enabled_mods.bin_and(criteria.notmods) != criteria.notmods))
+        clauses.append((Map.enabled_mods.bin_and(criteria.notmods) == 0))
 
     query = Map.select()\
                .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
