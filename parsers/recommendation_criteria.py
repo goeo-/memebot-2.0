@@ -60,7 +60,7 @@ def parse_criteria(user, message):
             if object.upper() == "NOMOD":
                 criteria.mods = -1
             elif object.upper().startswith('NOT:') and mods_regex.match(object.upper()[4:]):
-                criteria.notmods = modsify_string(object.upper())
+                criteria.notmods = modsify_string(object.upper()[4:])
                 if criteria.notmods & 512:
                     criteria.notmods |= 64
             elif mods_regex.match(object.upper()):
