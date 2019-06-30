@@ -40,7 +40,7 @@ async def find_map(criteria):
                 result = [x for x in await Database().objects.execute(query)][0]
             except Map.DoesNotExist:
                 raise CouldNotFindMapException
-            except KeyError:
+            except IndexError:
                 raise CouldNotFindMapException
             await Database().objects.create(Recommended, beatmap_id=result.beatmap_id, mods=result.enabled_mods,
                                             username=criteria.user, date=datetime.now())
