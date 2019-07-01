@@ -152,6 +152,7 @@ async def test_message(nick, target, message, **kwargs):
     """
     Runs when a direct message (pm, /q) is received.
     Logs the message to the console, and handles commands.
+
     :param nick:
     :param target:
     :param message:

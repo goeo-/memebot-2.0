@@ -3,17 +3,13 @@ from recommend.target import NoPlaysException
 from recommend.user import get_user_best
 
 
-# noinspection PyUnusedLocal
 async def future_you(user, beatmap_id, enabled_mods):
     user_best = await get_user_best(user)
     top_plays_amount = 0
     aim_pp = 0
     speed_pp = 0
     acc_pp = 0
-    for score in user_best[5:]:
-        if top_plays_amount == 20:
-            break
-
+    for score in user_best[5:25]:
         _, aim_pp_t, speed_pp_t, acc_pp_t = await get_pps(score["beatmap_id"], int(score["enabled_mods"]),
                                                           int(score["maxcombo"]), int(score["countmiss"]),
                                                           int(score["count50"]), int(score["count100"]))

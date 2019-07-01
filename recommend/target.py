@@ -24,10 +24,7 @@ async def target(user_best):
     aim_pp = 0
     speed_pp = 0
     acc_pp = 0
-    for score in user_best[2:]:
-        if top_plays_amount == 20:
-            break
-
+    for score in user_best[2:22]:
         total_pp_t, aim_pp_t, speed_pp_t, acc_pp_t = await get_pps(score["beatmap_id"],    int(score["enabled_mods"]),
                                                                    int(score["maxcombo"]), int(score["countmiss"]),
                                                                    int(score["count50"]),  int(score["count100"]))
