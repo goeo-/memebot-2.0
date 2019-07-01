@@ -44,11 +44,9 @@ async def find_map(criteria):
     while True:
         async with Database().user_locks[criteria.user]:
             try:
-                result = [x for x in await Database().objects.execute(query)][0]
-            except Map.DoesNotExist:
-                raise CouldNotFindMapException
-            except IndexError:
-                raise CouldNotFindMapException
+                result = next(await Database().objects.execute(query))
+            except StopIteration:
+                raise CouldNotFindMapException()
             await Database().objects.create(Recommended, beatmap_id=result.beatmap_id, mods=result.enabled_mods,
                                             username=criteria.user, date=datetime.now())
         # check if in top plays of user, if in there continue

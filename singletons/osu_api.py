@@ -12,6 +12,6 @@ class OsuAPI:
     async def call(self, endpoint, params):
         if not self.session:
             self.session = aiohttp.ClientSession()
-        params["k"] = Config().config["osu"]["api_key"]
-        async with self.session.get("%s%s" % (Config().config["osu"]["api_url"], endpoint), params=params) as resp:
+        params["k"] = Config()["osu"]["api_key"]
+        async with self.session.get("%s%s" % (Config()["osu"]["api_url"], endpoint), params=params) as resp:
             return await resp.json()

@@ -8,7 +8,7 @@ from recommend.user import get_user_best
 from singletons.config import Config
 from singletons.osu_api import OsuAPI
 
-config = Config().config
+config = Config()
 
 
 def time_for_mods(time, mods_enabled):

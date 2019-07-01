@@ -11,10 +11,10 @@ from singletons.singleton import singleton
 @singleton
 class Database:
     def __init__(self):
-        self.database = PooledMySQLDatabase(Config().config['sql']['db'], user=Config().config['sql']['user'],
-                                            password=Config().config['sql']['password'],
-                                            host=Config().config['sql']['host'],
-                                            port=int(Config().config['sql']['port']), max_connections=10)
+        self.database = PooledMySQLDatabase(Config()['sql']['db'], user=Config()['sql']['user'],
+                                            password=Config()['sql']['password'],
+                                            host=Config()['sql']['host'],
+                                            port=int(Config()['sql']['port']), max_connections=10)
 
         self.objects = Manager(self.database, loop=asyncio.get_event_loop())
         self.objects.database.allow_sync = False

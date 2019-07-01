@@ -6,7 +6,7 @@ import bottom
 from handlers import command, action
 from singletons.config import Config
 
-config = Config().config
+config = Config()
 
 bot = bottom.Client(host=config['irc']['host'], port=int(config['irc']['port']), ssl=False)
 loop = asyncio.get_event_loop()
