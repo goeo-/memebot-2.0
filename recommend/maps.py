@@ -44,8 +44,8 @@ async def find_map(criteria):
     while True:
         async with Database().user_locks[criteria.user]:
             try:
-                result = next(await Database().objects.execute(query))
-            except StopIteration:
+                result = await Database().objects.get(query)
+            except Map.DoesNotExist:
                 raise CouldNotFindMapException()
             await Database().objects.create(Recommended, beatmap_id=result.beatmap_id, mods=result.enabled_mods,
                                             username=criteria.user, date=datetime.now())
