@@ -48,10 +48,10 @@ async def target(user_best):
     return Target(acc_pp+60, aim_pp+60, speed_pp+60, total_pp+40, total_pp+200)
 
 
-def widen_target(target):
+def widen_target(target_):
     # raise the target by an amount that depends on how big the target was
-    target.target_acc_pp += 20
-    target.target_aim_pp += 20
-    target.target_speed_pp += 20
-    target.target_total_pp -= 20
-    target.target_total_pp_max += 80
+    target_.target_acc_pp += 20
+    target_.target_aim_pp += 20
+    target_.target_speed_pp += 20
+    target_.target_total_pp -= 20
+    target_.target_total_pp_max += 80

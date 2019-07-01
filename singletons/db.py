@@ -1,9 +1,11 @@
 import asyncio
-from peewee_async import Manager, PooledMySQLDatabase
-from singletons.singleton import singleton
-from singletons.config import Config
 from collections import defaultdict
+
 from peewee import Model, IntegerField, DoubleField, CharField, TimestampField
+from peewee_async import Manager, PooledMySQLDatabase
+
+from singletons.config import Config
+from singletons.singleton import singleton
 
 
 @singleton

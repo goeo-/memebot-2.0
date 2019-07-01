@@ -1,11 +1,12 @@
-from singletons.config import Config
-from singletons.osu_api import OsuAPI
-from parsers.recommendation_criteria import stringify_mods
 from time import strftime, gmtime
-from recommend.target import target, widen_target
+
+from parsers.recommendation_criteria import stringify_mods
 from recommend.maps import find_map, CouldNotFindMapException
 from recommend.pp import get_pp_spread
+from recommend.target import target, widen_target
 from recommend.user import get_user_best
+from singletons.config import Config
+from singletons.osu_api import OsuAPI
 
 config = Config().config
 

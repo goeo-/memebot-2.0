@@ -1,6 +1,7 @@
-from singletons.singleton import singleton
-from singletons.config import Config
 import aiohttp
+
+from singletons.config import Config
+from singletons.singleton import singleton
 
 
 @singleton

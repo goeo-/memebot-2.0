@@ -1,6 +1,6 @@
 from parsers.recommendation_criteria import parse_criteria
-from recommend.recommendation import Recommendation
 from recommend.maps import CouldNotFindMapException
+from recommend.recommendation import Recommendation
 from recommend.target import NoPlaysException
 
 

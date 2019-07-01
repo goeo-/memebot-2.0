@@ -4,12 +4,13 @@ mods_regex = re.compile(r'(?:EZ|HD|HR|DT|HT|NC|FL)+')
 
 
 class RecommendationCriteria:
-    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_ar", "max_od", "max_cs",
-                 "max_bpm", "min_creation_date", "min_length", "min_combo", "min_ar", "min_od", "min_cs", "min_bpm",
-                 "targets"]
+    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_ar", "max_od",
+                 "max_cs", "max_bpm", "min_creation_date", "min_length", "min_combo", "min_ar", "min_od", "min_cs",
+                 "min_bpm", "targets"]
 
-    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_ar=0, max_od=0, max_cs=0,
-                 max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_ar=0, min_od=0, min_cs=0, min_bpm=0):
+    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_ar=0, max_od=0,
+                 max_cs=0, max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_ar=0, min_od=0, min_cs=0,
+                 min_bpm=0):
         self.user = user
         self.mods = mods
         self.notmods = notmods
@@ -48,27 +49,26 @@ def modsify_string(mod_string):
 def parse_criteria(user, message):
     criteria = RecommendationCriteria(user)
     objects = message.split(" ")
-    second_object_is_mods = False
 
     # first object is always !r or !recommend, as we've tested the command against a regex before
 
     if len(objects) < 2:
         return criteria
 
-    for object in objects[1:]:
-        if not any(x in object for x in "<>="):
-            if object.upper() == "NOMOD":
+    for obj in objects[1:]:
+        if not any(x in obj for x in "<>="):
+            if obj.upper() == "NOMOD":
                 criteria.mods = -1
-            elif object.upper().startswith('NOT:') and mods_regex.match(object.upper()[4:]):
-                criteria.notmods = modsify_string(object.upper()[4:])
-            elif mods_regex.match(object.upper()):
-                criteria.mods = modsify_string(object.upper())
+            elif obj.upper().startswith('NOT:') and mods_regex.match(obj.upper()[4:]):
+                criteria.notmods = modsify_string(obj.upper()[4:])
+            elif mods_regex.match(obj.upper()):
+                criteria.mods = modsify_string(obj.upper())
 
         for x in ("<=", ">=", "<", ">", "="):
-            if x not in object:
+            if x not in obj:
                 continue
 
-            parts = object.split(x)
+            parts = obj.split(x)
 
             if parts[0] not in ("creation_date", "length", "combo", "ar", "od", "cs", "bpm"):
                 break

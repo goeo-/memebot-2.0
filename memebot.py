@@ -5,8 +5,6 @@ import bottom
 
 from handlers import command, action
 from singletons.config import Config
-from singletons import osu_api
-
 
 config = Config().config
 
@@ -15,7 +13,7 @@ loop = asyncio.get_event_loop()
 loop.set_debug(True)  # TODO: remove this?
 
 NICK = config['irc']['nick']
-CHANNELS = ["#%s"%x for x in config['irc']['channels'].replace(" ", "").split(",")]
+CHANNELS = ["#%s" % x for x in config['irc']['channels'].replace(" ", "").split(",")]
 
 message_send_lock = asyncio.Lock()
 
@@ -32,7 +30,7 @@ async def keepalive():
     while True:
         await asyncio.sleep(15)
         if time() - bot.last_message >= 120:
-            print("got nothing from the irc server in the last two minutes. the connection is probably dead.")
+            print("Got nothing from the IRC server in the last two minutes. The connection is probably dead.")
             await reconnect()
 
 
@@ -40,9 +38,11 @@ async def time_tracker(next_handler, message):
     bot.last_message = time()
     await next_handler(message)
 
+
 bot.raw_handlers.append(time_tracker)
 
 
+# noinspection PyUnusedLocal
 @bot.on('CLIENT_CONNECT')
 async def connect(**kwargs):
     """
@@ -52,7 +52,7 @@ async def connect(**kwargs):
     :param kwargs:
     :return:
     """
-    print("connected! sending user data.")
+    print("Connected! Sending user data.")
 
     # Send identifying information.
     bot.send('PASS', password=config['irc']['password'])
@@ -77,6 +77,7 @@ async def connect(**kwargs):
         bot.send('JOIN', channel=channel)
 
 
+# noinspection PyUnusedLocal
 @bot.on('CLIENT_DISCONNECT')
 async def reconnect(**kwargs):
     """
@@ -86,7 +87,7 @@ async def reconnect(**kwargs):
     :param kwargs:
     :return:
     """
-    print("reconnecting...")
+    print("Reconnecting...")
 
     await asyncio.sleep(2)
 
@@ -95,6 +96,7 @@ async def reconnect(**kwargs):
     await bot.wait("CLIENT_CONNECT")
 
 
+# noinspection PyUnusedLocal
 @bot.on('PING')
 def ping(message, **kwargs):
     """
@@ -104,7 +106,10 @@ def ping(message, **kwargs):
     :param kwargs:
     :return:
     """
-    print("got a ping")
+    print("[%s] <server=>%s> PING" % (
+        strftime("%H:%M:%S", gmtime()),
+        NICK
+    ))
     bot.send('PONG', message=message)
 
 
@@ -125,7 +130,7 @@ def privmsg(**kwargs):
         bot.trigger("DIRECT_MESSAGE", **kwargs)
     # Handle channel messages separately
     else:
-        bot.trigger("CHANNEL_MESSAGE",  **kwargs)
+        bot.trigger("CHANNEL_MESSAGE", **kwargs)
 
 
 async def send_message(target, message):
@@ -141,6 +146,7 @@ async def send_message(target, message):
         await asyncio.sleep(0.5)
 
 
+# noinspection PyUnusedLocal
 @bot.on('DIRECT_MESSAGE')
 async def test_message(nick, target, message, **kwargs):
     """
@@ -175,8 +181,9 @@ async def test_message(nick, target, message, **kwargs):
     if message.startswith(config["bot"]["prefix"]):
         return await send_message(nick, await command.handle(nick, message[len(config["bot"]["prefix"]):]))
 
+
 if __name__ == "__main__":
-    print("connecting...")
+    print("Connecting...")
     loop.create_task(bot.connect())
     loop.create_task(keepalive())
     loop.run_forever()

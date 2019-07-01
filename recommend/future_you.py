@@ -1,12 +1,12 @@
-from recommend.user import get_user_best
 from recommend.pp import get_pps
 from recommend.target import NoPlaysException
+from recommend.user import get_user_best
 
 
+# noinspection PyUnusedLocal
 async def future_you(user, beatmap_id, enabled_mods):
     user_best = await get_user_best(user)
     top_plays_amount = 0
-    total_pp = 0
     aim_pp = 0
     speed_pp = 0
     acc_pp = 0

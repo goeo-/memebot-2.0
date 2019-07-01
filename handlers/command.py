@@ -1,4 +1,5 @@
 import re
+
 from handlers import recommend, help, reset
 
 # Set what handles which regexes
@@ -22,7 +23,7 @@ async def handle(user, message):
     :param message:
     :return:
     """
-    for regex, handler in handlers.items():
-        if regex.match(message):
+    for regex_, handler in handlers.items():
+        if regex_.match(message):
             return await handler(user, message)
     return "No such command. Use the !help command for more information."

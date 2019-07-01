@@ -1,10 +1,12 @@
-from singletons.db import *
-from peewee import JOIN
-from recommend.future_you import future_you
-from recommend.user import get_user_best
-from functools import reduce
 import operator
 from datetime import datetime, timedelta
+from functools import reduce
+
+from peewee import JOIN
+
+from recommend.future_you import future_you
+from recommend.user import get_user_best
+from singletons.db import *
 
 
 async def find_map(criteria):
@@ -26,14 +28,16 @@ async def find_map(criteria):
     if criteria.notmods:
         clauses.append((Map.enabled_mods.bin_and(criteria.notmods) == 0))
 
-    query = Map.select()\
-               .join(Recommended, JOIN.LEFT_OUTER, on=((Recommended.beatmap_id == Map.beatmap_id) &
-                                                       (Recommended.mods.bin_and(Map.enabled_mods) == Recommended.mods) &
-                                                       (Recommended.username == criteria.user) &
-                                                       (Recommended.date > datetime.now() - timedelta(days=30)))) \
-               .where(reduce(operator.and_, clauses)) \
-               .order_by(Map.farminess.desc()) \
-               .limit(1)
+    query = Map.select() \
+        .join(Recommended, JOIN.LEFT_OUTER, on=(
+            (Recommended.beatmap_id == Map.beatmap_id) &
+            (Recommended.mods.bin_and(Map.enabled_mods) == Recommended.mods) &
+            (Recommended.username == criteria.user) &
+            (Recommended.date > datetime.now() - timedelta(days=30))
+         )) \
+        .where(reduce(operator.and_, clauses)) \
+        .order_by(Map.farminess.desc()) \
+        .limit(1)
 
     user_best = await get_user_best(criteria.user)
 
@@ -51,7 +55,7 @@ async def find_map(criteria):
 
         for play in user_best:
             if play['beatmap_id'] == result.beatmap_id and \
-               (play['enabled_mods'] & result.enabled_mods == play['enabled_mods']):
+               play['enabled_mods'] & result.enabled_mods == play['enabled_mods']:
                 continue
         return result.beatmap_id, result.enabled_mods, await future_you(criteria.user,
                                                                         result.beatmap_id,

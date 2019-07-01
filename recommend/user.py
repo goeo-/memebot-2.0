@@ -1,6 +1,6 @@
 from time import time
-from singletons.osu_api import OsuAPI
 
+from singletons.osu_api import OsuAPI
 
 user_top_plays = {
     # "username": (cache time, [top plays])

@@ -1,8 +1,9 @@
-from oppai import *
-from singletons.config import Config
-import aiohttp
 import aiofiles
 import aiofiles.os
+import aiohttp
+from oppai import *
+
+from singletons.config import Config
 
 
 async def download_map(beatmap_id):
