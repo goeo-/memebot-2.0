@@ -65,8 +65,8 @@ class Recommendation:
                    stars=stars, ar=ar, od=od)
 
     def __str__(self):
-        message = "[%s%s %s - %s [%s]] " % (config["osu"]["beatmap_url"], self.beatmap_id, self.beatmap["artist"],
-                                            self.beatmap["title"], self.beatmap["version"])
+        message = "[https://osu.ppy.sh/b/%s %s - %s [%s]] " % (self.beatmap_id, self.beatmap["artist"],
+                                                               self.beatmap["title"], self.beatmap["version"])
 
         if self.enabled_mods:
             message += "+%s " % stringify_mods(self.enabled_mods)
