@@ -1,49 +1,49 @@
-import re
+from datetime import datetime
+from recommend.mods import modsify_string, mods_regex
+from recommend.maps import InvalidDateException
 
-mods_regex = re.compile(r'(?:EZ|HD|HR|DT|HT|NC|FL)+')
-
+date_formats = ["%Y-%m-%d", "%Y/%m/%d", "%Y-%m", "%Y/%m", "%Y"]
 
 class RecommendationCriteria:
-    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_ar", "max_od",
-                 "max_cs", "max_bpm", "min_creation_date", "min_length", "min_combo", "min_ar", "min_od", "min_cs",
-                 "min_bpm", "targets"]
+    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_star", "max_ar", 
+                 "max_od", "max_cs", "max_hp", "max_bpm", "min_creation_date", "min_length", "min_combo", "min_star", 
+                 "min_ar", "min_od", "min_cs", "min_hp", "min_bpm", "targets"]
 
-    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_ar=0, max_od=0,
-                 max_cs=0, max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_ar=0, min_od=0, min_cs=0,
-                 min_bpm=0):
+    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_star=0, max_ar=0, 
+                 max_od=0, max_cs=0, max_hp=0, max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_star=0, 
+                 min_ar=0, min_od=0, min_cs=0, min_hp=0, min_bpm=0):
         self.user = user
         self.mods = mods
         self.notmods = notmods
         self.max_creation_date = max_creation_date
         self.max_length = max_length
         self.max_combo = max_combo
+        self.max_star = max_star
         self.max_ar = max_ar
         self.max_od = max_od
         self.max_cs = max_cs
+        self.max_hp = max_hp
         self.max_bpm = max_bpm
         self.min_creation_date = min_creation_date
         self.min_length = min_length
         self.min_combo = min_combo
+        self.min_star = min_star
         self.min_ar = min_ar
         self.min_od = min_od
         self.min_cs = min_cs
+        self.min_hp = min_hp
         self.min_bpm = min_bpm
         self.targets = None
 
 
-mods_list = ['NF', 'EZ', 'TD', 'HD', 'HR', 'SD', 'DT', 'RX', 'HT', 'NC', 'FL', 'AU', 'SO', 'AP', 'PF',
-             'K4', 'K5', 'K6', 'K7', 'K8', 'KM', 'FI', 'RD', 'LM', 'K9', 'KX', 'K1', 'K3', 'K2', 'V2']
+def parse_date(filter):
+    for format in date_formats: # try to find a matching date format
+        try:
+            return datetime.strptime(filter, format)
+        except ValueError:
+            continue
 
-
-def stringify_mods(mods_enabled):
-    mods = [name for index, name in enumerate(mods_list) if 2 ** index & mods_enabled]
-    if "NC" in mods:
-        mods.remove("DT")
-    return "".join(mods)
-
-
-def modsify_string(mod_string):
-    return sum([2 ** mods_list.index(mod_string[i:i + 2]) for i in range(0, len(mod_string), 2)])
+    raise InvalidDateException()
 
 
 def parse_criteria(user, message):
@@ -70,20 +70,30 @@ def parse_criteria(user, message):
 
             parts = obj.split(x)
 
-            if parts[0] not in ("creation_date", "length", "combo", "ar", "od", "cs", "bpm"):
+            if parts[0] not in ("creation_date", "created", "date", "length", "len", "combo", "sr", "stars", "star", "ar", "od", "cs", "hp", "bpm"):
                 break
 
+            # aliases
+            if parts[0] in ["created", "date"]:
+                parts[0] = "creation_date"
+            if parts[0] == "len":
+                parts[0] = "length"
+            if parts[0] in ["sr", "stars"]:
+                parts[0] = "star"
+
+            value = parse_date(parts[1]) if parts[0] == "creation_date" else float(parts[1])
+
             if x == "<=":
-                setattr(criteria, "max_%s" % parts[0], parts[1])
+                setattr(criteria, "max_%s" % parts[0], value)
             elif x == ">=":
-                setattr(criteria, "min_%s" % parts[0], parts[1])
+                setattr(criteria, "min_%s" % parts[0], value)
             elif x == "<":
-                setattr(criteria, "max_%s" % parts[0], float(parts[1]) - 0.01)
+                setattr(criteria, "max_%s" % parts[0], (value - 0.01) if type(value) == "float" else value)
             elif x == ">":
-                setattr(criteria, "min_%s" % parts[0], float(parts[1]) + 0.01)
+                setattr(criteria, "min_%s" % parts[0], (value + 0.01) if type(value) == "float" else value)
             elif x == "=":
-                setattr(criteria, "max_%s" % parts[0], parts[1])
-                setattr(criteria, "min_%s" % parts[0], parts[1])
+                setattr(criteria, "max_%s" % parts[0], value)
+                setattr(criteria, "min_%s" % parts[0], value)
 
             break
 

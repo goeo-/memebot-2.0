@@ -1,6 +1,6 @@
 from time import strftime, gmtime
 
-from parsers.recommendation_criteria import stringify_mods
+from recommend.mods import stringify_mods
 from recommend.maps import find_map, CouldNotFindMapException
 from recommend.pp import get_pp_spread
 from recommend.target import target, widen_target
