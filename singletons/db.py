@@ -1,7 +1,7 @@
 import asyncio
 from collections import defaultdict
 
-from peewee import Model, IntegerField, DoubleField, CharField, TimestampField, DateTimeField
+from peewee import Model, IntegerField, DoubleField, CharField, TimestampField, DateTimeField, CompositeKey
 from peewee_async import Manager, PooledMySQLDatabase
 
 from singletons.config import Config
@@ -28,7 +28,6 @@ class BaseModel(Model):
 
 
 class Map(BaseModel):
-    id = IntegerField(primary_key=True)
     beatmap_id = IntegerField()
     enabled_mods = IntegerField()
     aim_pp = DoubleField(index=True)
@@ -40,6 +39,7 @@ class Map(BaseModel):
     class Meta:
         table_name = 'maps'
         db_table = 'maps'
+        primary_key = CompositeKey('beatmap_id', 'enabled_mods')
 
 
 class MapData(BaseModel):
@@ -68,11 +68,11 @@ class MapData(BaseModel):
     hp_hrdt = DoubleField(index=True)
     star_hrdt = DoubleField(index=True)
     
-    cs_ezdt = DoubleField(index=True)
-    od_ezdt = DoubleField(index=True)
-    ar_ezdt = DoubleField(index=True)
-    hp_ezdt = DoubleField(index=True)
-    star_ezdt = DoubleField(index=True)
+    cs_ezdt = DoubleField()
+    od_ezdt = DoubleField()
+    ar_ezdt = DoubleField()
+    hp_ezdt = DoubleField()
+    star_ezdt = DoubleField()
     
     cs_ht = DoubleField(index=True)
     od_ht = DoubleField(index=True)
@@ -86,11 +86,11 @@ class MapData(BaseModel):
     hp_hrht = DoubleField(index=True)
     star_hrht = DoubleField(index=True)
     
-    cs_ezht = DoubleField(index=True)
-    od_ezht = DoubleField(index=True)
-    ar_ezht = DoubleField(index=True)
-    hp_ezht = DoubleField(index=True)
-    star_ezht = DoubleField(index=True)
+    cs_ezht = DoubleField()
+    od_ezht = DoubleField()
+    ar_ezht = DoubleField()
+    hp_ezht = DoubleField()
+    star_ezht = DoubleField()
     
     cs_hr = DoubleField(index=True)
     od_hr = DoubleField(index=True)
@@ -98,11 +98,11 @@ class MapData(BaseModel):
     hp_hr = DoubleField(index=True)
     star_hr = DoubleField(index=True)
     
-    cs_ez = DoubleField(index=True)
-    od_ez = DoubleField(index=True)
-    ar_ez = DoubleField(index=True)
-    hp_ez = DoubleField(index=True)
-    star_ez = DoubleField(index=True)
+    cs_ez = DoubleField()
+    od_ez = DoubleField()
+    ar_ez = DoubleField()
+    hp_ez = DoubleField()
+    star_ez = DoubleField()
 
     class Meta:
         table_name = 'maps_data'

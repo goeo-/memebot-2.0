@@ -2,7 +2,7 @@ import re
 
 from enum import IntFlag
 
-mods_regex = re.compile(r'(?:EZ|HD|HR|DT|HT|NC|FL)+')
+mods_regex = re.compile(r'(?:EZ|HD|HR|DT|HT|NC|FL|TD)+')
 mods_list = ['NF', 'EZ', 'TD', 'HD', 'HR', 'SD', 'DT', 'RX', 'HT', 'NC', 'FL', 'AU', 'SO', 'AP', 'PF',
              'K4', 'K5', 'K6', 'K7', 'K8', 'KM', 'FI', 'RD', 'LM', 'K9', 'KX', 'K1', 'K3', 'K2', 'V2']
 

@@ -34,8 +34,8 @@ async def find_map(criteria):
         (Map.total_pp.between(criteria.targets.target_total_pp, criteria.targets.target_total_pp_max))
     ]
 
-    # only care about EZ, HD, HR, DT, HT, FL
-    actual_mods = criteria.mods & 1370
+    # only care about EZ, HD, HR, DT, HT, FL, TD
+    actual_mods = criteria.mods & 1374
     filter_mods = criteria.mods & (ModFlag.DoubleTime + ModFlag.HalfTime + ModFlag.HardRock + ModFlag.Easy)
 
     if criteria.mods:
@@ -45,6 +45,10 @@ async def find_map(criteria):
             clauses.append((Map.enabled_mods == 0))
         else:
             clauses.append((Map.enabled_mods.bin_and(actual_mods) == actual_mods))
+        
+        # don't recommend touchscreen plays unless explicitly asked for
+        if not has_mod(criteria.mods, ModFlag.TouchDevice):
+            clauses.append((Map.enabled_mods.bin_and(ModFlag.TouchDevice) == 0))
 
     if criteria.notmods:
         clauses.append((Map.enabled_mods.bin_and(criteria.notmods) == 0))
