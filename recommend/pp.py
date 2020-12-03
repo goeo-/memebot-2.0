@@ -35,7 +35,7 @@ async def get_pp_spread(beatmap_id, enabled_mods):
     ezpp_set_autocalc(ez, 1)
     ezpp_dup(ez, '%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
     
-    if mods & 4:
+    if enabled_mods & 4:
         ezpp_set_mods(ez, enabled_mods ^ 64)
     ezpp_set_mods(ez, enabled_mods)
     
