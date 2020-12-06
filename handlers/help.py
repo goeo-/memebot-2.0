@@ -1,5 +1,3 @@
 # noinspection PyUnusedLocal
 async def handler(user, message):
-    return "Thanks for using memebot. memebot is under heavy development right now, and it currently only supports " \
-           "the !r (or !recommend) command. Feel free to call +1 (904) 867-4600 " \
-           "for more information about memebot, and its development."
+    return "Thanks for using memebot. Documentation and examples can be found [https://github.com/goeo-/memebot-2.0/wiki/Home on the wiki]."
