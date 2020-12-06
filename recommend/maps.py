@@ -109,7 +109,7 @@ async def find_map(criteria):
 
         for play in user_best:
             if int(play['beatmap_id']) == int(result.beatmap_id) and \
-               int(play['enabled_mods']) & int(result.enabled_mods) == int(play['enabled_mods']):
+               has_mod(int(play['enabled_mods']), int(result.enabled_mods)):
                 already_in_top_plays = True
                 break
         if already_in_top_plays:
