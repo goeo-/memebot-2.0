@@ -34,7 +34,11 @@ async def get_pp_spread(beatmap_id, enabled_mods):
     ez = ezpp_new()
     ezpp_set_autocalc(ez, 1)
     ezpp_dup(ez, '%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+
+    if enabled_mods & 4:
+        ezpp_set_mods(ez, enabled_mods ^ 64)
     ezpp_set_mods(ez, enabled_mods)
+
     ezpp_set_accuracy_percent(ez, 95)
     pp95 = ezpp_pp(ez)
     ezpp_set_accuracy_percent(ez, 98)
@@ -48,6 +52,26 @@ async def get_pp_spread(beatmap_id, enabled_mods):
     od = ezpp_od(ez)
     ezpp_free(ez)
     return pp95, pp98, pp99, pp100, stars, ar, od
+
+
+async def get_pp(beatmap_id, enabled_mods, accuracy):
+    # returns total_pp for a specific accuracy
+    await ensure_map_exists(beatmap_id)
+    ez = ezpp_new()
+    ezpp_set_autocalc(ez, 1)
+    ezpp_dup(ez, '%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+
+    if enabled_mods & 4:
+        ezpp_set_mods(ez, enabled_mods ^ 64)
+    ezpp_set_mods(ez, enabled_mods)
+
+    ezpp_set_accuracy_percent(ez, accuracy)
+    pp = ezpp_pp(ez)
+    stars = ezpp_stars(ez)
+    ar = ezpp_ar(ez)
+    od = ezpp_od(ez)
+    ezpp_free(ez)
+    return pp, stars, ar, od
 
 
 async def get_pps(beatmap_id, enabled_mods, maxcombo, countmiss, count50, count100):

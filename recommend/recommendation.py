@@ -1,42 +1,23 @@
 from time import strftime, gmtime
 
-from recommend.mods import stringify_mods
 from recommend.maps import find_map, CouldNotFindMapException
+from recommend.beatmap import Beatmap, get_beatmap_by_id
 from recommend.pp import get_pp_spread
 from recommend.target import target, widen_target
 from recommend.user import get_user_best
 from singletons.config import Config
-from singletons.osu_api import OsuAPI
 
 config = Config()
 
 
-def time_for_mods(time, mods_enabled):
-    if mods_enabled & 64 == 64:
-        return int(time * 0.75)
-    return time
-
-
-def bpm_for_mods(bpm, mods_enabled):
-    if mods_enabled & 64 == 64:
-        return int(bpm * 1.5)
-    else:
-        return int(bpm)
-
-
-class Recommendation:
+class Recommendation(Beatmap):
     def __init__(self, beatmap_id, beatmap, enabled_mods, future_you, pp_95, pp_98, pp_99, pp_100, stars, ar, od):
-        self.beatmap_id = beatmap_id
-        self.beatmap = beatmap
-        self.enabled_mods = enabled_mods
+        super().__init__(beatmap_id, beatmap, enabled_mods, stars, ar, od)
         self.future_you = future_you
         self.pp_95 = pp_95
         self.pp_98 = pp_98
         self.pp_99 = pp_99
         self.pp_100 = pp_100
-        self.stars = stars
-        self.ar = ar
-        self.od = od
 
     @classmethod
     async def get(cls, criteria):
@@ -52,26 +33,16 @@ class Recommendation:
 
         pp_95, pp_98, pp_99, pp_100, stars, ar, od = await get_pp_spread(beatmap_id, enabled_mods)
 
-        beatmap = await OsuAPI().call("get_beatmaps", {"b": beatmap_id, "m": 0})
-
-        try:
-            beatmap = beatmap[0]
-        except KeyError:
-            print('Had an issue with map:', beatmap_id)
+        beatmap = await get_beatmap_by_id(beatmap_id)
+        if not beatmap:
             return await Recommendation.get(criteria)
 
         return cls(beatmap_id=beatmap_id, beatmap=beatmap, enabled_mods=enabled_mods,
                    future_you=future_you, pp_95=pp_95, pp_98=pp_98, pp_99=pp_99, pp_100=pp_100,
                    stars=stars, ar=ar, od=od)
 
-    def __str__(self):
-        message = "[https://osu.ppy.sh/b/%s %s - %s [%s]] " % (self.beatmap_id, self.beatmap["artist"],
-                                                               self.beatmap["title"], self.beatmap["version"])
-
-        if self.enabled_mods:
-            message += "+%s " % stringify_mods(self.enabled_mods)
-
-        message += "future you: %s | 95%%: %spp | 98%%: %spp | 99%%: %spp | 100%%: %spp | " % (
+    def stringify_pp(self):
+        return "future you: %s | 95%%: %spp | 98%%: %spp | 99%%: %spp | 100%%: %spp" % (
             round(self.future_you, 2),
             round(self.pp_95, 2),
             round(self.pp_98, 2),
@@ -79,22 +50,3 @@ class Recommendation:
             round(self.pp_100, 2)
         )
 
-        message += "%s ★ %s ♫ %s AR %s OD %s" % (
-            strftime(
-                "%M:%S",
-                gmtime(
-                    time_for_mods(
-                        int(self.beatmap["hit_length"]),
-                        self.enabled_mods
-                    )
-                )
-            ),
-            round(self.stars, 2),
-            bpm_for_mods(
-                float(self.beatmap["bpm"]), self.enabled_mods
-            ),
-            round(self.ar, 2),
-            round(self.od, 2)
-        )
-
-        return message
