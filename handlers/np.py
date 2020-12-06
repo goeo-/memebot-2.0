@@ -58,7 +58,10 @@ async def pp_handler(user, message):
         elif acc_regex.match(obj):
             accuracy = max(min(float(obj.rstrip("%")), 100), 0)
 
-    return await calculate_pp(beatmap_id, enabled_mods, accuracy)
+    if accuracy:
+        return await calculate_pp(beatmap_id, enabled_mods, accuracy)
+    else:
+        return await calculate_np(beatmap_id, enabled_mods)
 
 
 async def calculate_pp(beatmap_id, enabled_mods, accuracy):
