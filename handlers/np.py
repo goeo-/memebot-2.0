@@ -7,6 +7,7 @@ from singletons.osu_api import OsuAPI
 
 # Used to remember the map for the !pp command
 user_np_cache = {}
+combo_regex = re.compile(r'[\d,.]+x')
 acc_regex = re.compile(r'\d+(?:\.\d+)?%?')
   
 
@@ -47,36 +48,45 @@ async def pp_handler(user, message):
     
     objects = message.split(" ")
     if len(objects) < 2:
-        return 'Please specify the accuracy or mods. Use the !help command for more information.'
+        return 'Please specify the mods, accuracy and/or combo. Use the !help command for more information.'
 
     enabled_mods = 0
+    combo = None
     accuracy = None
 
     for obj in objects[1:]:
         if mods_regex.match(obj):
             enabled_mods = modsify_string(obj)
+        elif combo_regex.match(obj):
+            combo = max(int(obj.translate(str.maketrans("", "", ",.x"))), 1)
         elif acc_regex.match(obj):
             accuracy = max(min(float(obj.rstrip("%")), 100), 0)
 
-    if accuracy:
-        return await calculate_pp(beatmap_id, enabled_mods, accuracy)
-    else:
-        return await calculate_np(beatmap_id, enabled_mods)
+    return await calculate_pp(beatmap_id, enabled_mods, accuracy, combo)
 
 
-async def calculate_pp(beatmap_id, enabled_mods, accuracy):
-    pp, stars, ar, od = await get_pp(beatmap_id, enabled_mods, accuracy)
+async def calculate_pp(beatmap_id, enabled_mods, accuracy, combo):
+    pp, pp_95, pp_98, pp_99, pp_100 = None, None, None, None, None
 
     beatmap = await get_beatmap_by_id(beatmap_id)
     if not beatmap:
         return 'Error getting beatmap information.'
 
-    pp_map = NPMap(beatmap_id, beatmap, enabled_mods, accuracy, pp, None, None, None, None, stars, ar, od)
+    # oppai doesn't clamp the max combo
+    if combo:
+        combo = min(combo, int(beatmap["max_combo"]))
+
+    if accuracy:
+        pp, stars, ar, od = await get_pp(beatmap_id, enabled_mods, accuracy, combo)
+    else:
+        pp_95, pp_98, pp_99, pp_100, stars, ar, od = await get_pp_spread(beatmap_id, enabled_mods, combo)
+
+    pp_map = NPMap(beatmap_id, beatmap, enabled_mods, accuracy, pp, pp_95, pp_98, pp_99, pp_100, stars, ar, od, combo)
     return pp_map
 
 
 class NPMap(Beatmap):
-    def __init__(self, beatmap_id, beatmap, enabled_mods, accuracy, pp, pp_95, pp_98, pp_99, pp_100, stars, ar, od):
+    def __init__(self, beatmap_id, beatmap, enabled_mods, accuracy, pp, pp_95, pp_98, pp_99, pp_100, stars, ar, od, combo=None):
         super().__init__(beatmap_id, beatmap, enabled_mods, stars, ar, od)
         self.accuracy = accuracy
         self.pp = pp
@@ -84,6 +94,7 @@ class NPMap(Beatmap):
         self.pp_98 = pp_98
         self.pp_99 = pp_99
         self.pp_100 = pp_100
+        self.combo = combo
 
     def stringify_pp(self):
         if self.accuracy:

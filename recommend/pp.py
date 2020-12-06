@@ -28,7 +28,7 @@ async def ensure_map_exists(beatmap_id):
         return await download_map(beatmap_id)
 
 
-async def get_pp_spread(beatmap_id, enabled_mods):
+async def get_pp_spread(beatmap_id, enabled_mods, combo=None):
     # get spread (95, 98, 99, 100 acc pps)
     await ensure_map_exists(beatmap_id)
     ez = ezpp_new()
@@ -38,6 +38,9 @@ async def get_pp_spread(beatmap_id, enabled_mods):
     if enabled_mods & 4:
         ezpp_set_mods(ez, enabled_mods ^ 64)
     ezpp_set_mods(ez, enabled_mods)
+
+    if combo:
+        ezpp_set_combo(ez, combo)
     
     ezpp_set_accuracy_percent(ez, 95)
     pp95 = ezpp_pp(ez)
@@ -54,7 +57,7 @@ async def get_pp_spread(beatmap_id, enabled_mods):
     return pp95, pp98, pp99, pp100, stars, ar, od
 
 
-async def get_pp(beatmap_id, enabled_mods, accuracy):
+async def get_pp(beatmap_id, enabled_mods, accuracy, combo=None):
     # returns total_pp for a specific accuracy
     await ensure_map_exists(beatmap_id)
     ez = ezpp_new()
@@ -64,6 +67,9 @@ async def get_pp(beatmap_id, enabled_mods, accuracy):
     if enabled_mods & 4:
         ezpp_set_mods(ez, enabled_mods ^ 64)
     ezpp_set_mods(ez, enabled_mods)
+
+    if combo:
+        ezpp_set_combo(ez, combo)
 
     ezpp_set_accuracy_percent(ez, accuracy)
     pp = ezpp_pp(ez)

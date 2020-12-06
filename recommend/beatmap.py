@@ -27,13 +27,14 @@ async def get_beatmap_by_id(beatmap_id):
 
 
 class Beatmap:
-    def __init__(self, beatmap_id, beatmap, enabled_mods, stars, ar, od):
+    def __init__(self, beatmap_id, beatmap, enabled_mods, stars, ar, od, combo=None):
         self.beatmap_id = beatmap_id
         self.beatmap = beatmap
         self.enabled_mods = enabled_mods
         self.stars = stars
         self.ar = ar
         self.od = od
+        self.combo = combo
 
     def stringify_pp(self):
         return ""
@@ -45,8 +46,12 @@ class Beatmap:
         if self.enabled_mods:
             message += "+%s " % stringify_mods(self.enabled_mods)
 
-        message += "%s | %s ★ %s ♫ %s AR %s OD %s" % (
-            self.stringify_pp(),
+        message += self.stringify_pp() + " | "
+
+        if self.combo:
+            message += "%dx | " % self.combo
+
+        message += "%s ★ %s ♫ %s AR %s OD %s" % (
             strftime(
                 "%M:%S",
                 gmtime(
@@ -63,5 +68,6 @@ class Beatmap:
             round(self.ar, 2),
             round(self.od, 2)
         )
+        
 
         return message
