@@ -55,11 +55,11 @@ async def pp_handler(user, message):
     accuracy = None
 
     for obj in objects[1:]:
-        if mods_regex.match(obj):
+        if mods_regex.fullmatch(obj):
             enabled_mods = modsify_string(obj)
-        elif combo_regex.match(obj):
+        elif combo_regex.fullmatch(obj):
             combo = max(int(obj.translate(str.maketrans("", "", ",.x"))), 1)
-        elif acc_regex.match(obj):
+        elif acc_regex.fullmatch(obj):
             accuracy = max(min(float(obj.rstrip("%")), 100), 0)
 
     return await calculate_pp(beatmap_id, enabled_mods, accuracy, combo)

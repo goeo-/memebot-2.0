@@ -4,10 +4,10 @@ from handlers import recommend, help, reset, np
 
 # Set what handles which regexes
 handlers = {
-    r'^r(?:ecommend)?(?: .*)?$': recommend.handler,
-    r'^reset$': reset.handler,
-    r'^h(?:elp)?(?: .*)?$': help.handler,
-    r'^(?:pp|acc(?:uracy)?|with)': np.pp_handler
+    r'(?i)^r(?:ecommend)?(?: .*)?$': recommend.handler,
+    r'(?i)^reset$': reset.handler,
+    r'(?i)^h(?:elp)?(?: .*)?$': help.handler,
+    r'(?i)^(?:pp|acc(?:uracy)?|with)': np.pp_handler
 }
 
 # Compile the regexes so they run faster (we'll be running them for every command!)
