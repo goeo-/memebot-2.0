@@ -59,9 +59,9 @@ def parse_criteria(user, message):
         if not any(x in obj for x in "<>="):
             if obj.upper() == "NOMOD":
                 criteria.mods = -1
-            elif obj.upper().startswith('NOT:') and mods_regex.match(obj[4:]):
+            elif obj.upper().startswith('NOT:') and mods_regex.fullmatch(obj[4:]):
                 criteria.notmods = modsify_string(obj.upper()[4:])
-            elif mods_regex.match(obj):
+            elif mods_regex.fullmatch(obj):
                 criteria.mods = modsify_string(obj)
 
         for x in ("<=", ">=", "<", ">", "="):
