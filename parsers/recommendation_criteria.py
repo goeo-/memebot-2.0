@@ -68,7 +68,7 @@ def parse_criteria(user, message):
             if x not in obj:
                 continue
 
-            parts = obj.split(x)
+            parts = obj.lower().split(x)
 
             if parts[0] not in ("creation_date", "created", "date", "length", "len", "combo", "sr", "stars", "star", "ar", "od", "cs", "hp", "bpm"):
                 break
