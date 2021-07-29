@@ -4,7 +4,7 @@ from handlers import np
 
 # Set what handles which regexes
 handlers = {
-    r'^(?:is listening to|is playing|is watching|is editing) \[https?://osu\.ppy\.sh/b/(?P<id>\d+).*\](?P<mods>(?: (?:[-+~|]\w+[~|]?))*)$': np.np_handler
+    r'^(?:is listening to|is playing|is watching|is editing) \[https?://osu\.ppy\.sh/beatmapsets/.*?#.*?(?P<id>\d+).*\](?P<mods>(?: (?:[-+~|]\w+[~|]?))*)$': np.np_handler
 }
 
 # Compile the regexes so they run faster (we'll be running them for every command!)
