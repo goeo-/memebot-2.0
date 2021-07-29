@@ -67,7 +67,7 @@ async def find_map(criteria):
     if criteria.min_bpm:
         clauses.append((MapData.bpm >= scale_time(criteria.min_bpm, actual_mods)))
     if criteria.min_combo:
-        clauses.append((MapData.min_combo >= criteria.min_combo))
+        clauses.append((MapData.max_combo >= criteria.min_combo))
     if criteria.min_creation_date:
         clauses.append((MapData.creation_date >= criteria.min_creation_date))
 
