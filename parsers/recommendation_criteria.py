@@ -1,16 +1,16 @@
 from datetime import datetime
 from recommend.mods import modsify_string, mods_regex
-from recommend.maps import InvalidDateException
+from recommend.maps import InvalidDateException, InvalidNumberException
 
 date_formats = ["%Y-%m-%d", "%Y/%m/%d", "%Y-%m", "%Y/%m", "%Y"]
 
 class RecommendationCriteria:
-    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_star", "max_ar", 
-                 "max_od", "max_cs", "max_hp", "max_bpm", "min_creation_date", "min_length", "min_combo", "min_star", 
+    __slots__ = ["user", "mods", "notmods", "max_creation_date", "max_length", "max_combo", "max_star", "max_ar",
+                 "max_od", "max_cs", "max_hp", "max_bpm", "min_creation_date", "min_length", "min_combo", "min_star",
                  "min_ar", "min_od", "min_cs", "min_hp", "min_bpm", "targets"]
 
-    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_star=0, max_ar=0, 
-                 max_od=0, max_cs=0, max_hp=0, max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_star=0, 
+    def __init__(self, user, mods=0, notmods=0, max_creation_date=0, max_length=0, max_combo=0, max_star=0, max_ar=0,
+                 max_od=0, max_cs=0, max_hp=0, max_bpm=0, min_creation_date=0, min_length=0, min_combo=0, min_star=0,
                  min_ar=0, min_od=0, min_cs=0, min_hp=0, min_bpm=0):
         self.user = user
         self.mods = mods
@@ -43,7 +43,7 @@ def parse_date(filter):
         except ValueError:
             continue
 
-    raise InvalidDateException()
+    raise InvalidDateException
 
 
 def parse_criteria(user, message):
@@ -74,14 +74,20 @@ def parse_criteria(user, message):
                 break
 
             # aliases
-            if parts[0] in ["created", "date"]:
+            if parts[0] in ("created", "date"):
                 parts[0] = "creation_date"
-            if parts[0] == "len":
+            elif parts[0] == "len":
                 parts[0] = "length"
-            if parts[0] in ["sr", "stars"]:
+            elif parts[0] in ("sr", "stars"):
                 parts[0] = "star"
 
-            value = parse_date(parts[1]) if parts[0] == "creation_date" else float(parts[1])
+            if parts[0] == "creation_date":
+                value = parse_date(parts[1])
+            else:
+                if parts[1].replace('.', '', 1).isdecimal():
+                    value = float(parts[1])
+                else:
+                    raise InvalidNumberException
 
             if x == "<=":
                 setattr(criteria, "max_%s" % parts[0], value)

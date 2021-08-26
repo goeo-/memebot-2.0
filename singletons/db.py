@@ -49,55 +49,55 @@ class MapData(BaseModel):
     length = DoubleField(index=True)
     submit_date = DateTimeField(index=True)
     creation_date = DateTimeField(index=True)
-    
+
     cs_nomod = DoubleField(index=True)
     od_nomod = DoubleField(index=True)
     ar_nomod = DoubleField(index=True)
     hp_nomod = DoubleField(index=True)
     star_nomod = DoubleField(index=True)
-    
+
     cs_dt = DoubleField(index=True)
     od_dt = DoubleField(index=True)
     ar_dt = DoubleField(index=True)
     hp_dt = DoubleField(index=True)
     star_dt = DoubleField(index=True)
-    
+
     cs_hrdt = DoubleField(index=True)
     od_hrdt = DoubleField(index=True)
     ar_hrdt = DoubleField(index=True)
     hp_hrdt = DoubleField(index=True)
     star_hrdt = DoubleField(index=True)
-    
+
     cs_ezdt = DoubleField()
     od_ezdt = DoubleField()
     ar_ezdt = DoubleField()
     hp_ezdt = DoubleField()
     star_ezdt = DoubleField()
-    
+
     cs_ht = DoubleField(index=True)
     od_ht = DoubleField(index=True)
     ar_ht = DoubleField(index=True)
     hp_ht = DoubleField(index=True)
     star_ht = DoubleField(index=True)
-    
+
     cs_hrht = DoubleField(index=True)
     od_hrht = DoubleField(index=True)
     ar_hrht = DoubleField(index=True)
     hp_hrht = DoubleField(index=True)
     star_hrht = DoubleField(index=True)
-    
+
     cs_ezht = DoubleField()
     od_ezht = DoubleField()
     ar_ezht = DoubleField()
     hp_ezht = DoubleField()
     star_ezht = DoubleField()
-    
+
     cs_hr = DoubleField(index=True)
     od_hr = DoubleField(index=True)
     ar_hr = DoubleField(index=True)
     hp_hr = DoubleField(index=True)
     star_hr = DoubleField(index=True)
-    
+
     cs_ez = DoubleField()
     od_ez = DoubleField()
     ar_ez = DoubleField()

@@ -9,7 +9,7 @@ from singletons.osu_api import OsuAPI
 user_np_cache = {}
 combo_regex = re.compile(r'[\d,.]+x')
 acc_regex = re.compile(r'\d+(?:\.\d+)?%?')
-  
+
 
 async def np_handler(user, message, match):
     parts = match.groupdict()
@@ -45,7 +45,7 @@ async def pp_handler(user, message):
         beatmap_id = user_np_cache[user]
     except KeyError:
         return 'Run /np first! Use the !help command for more information.'
-    
+
     objects = message.split(" ")
     if len(objects) < 2:
         return 'Please specify the mods, accuracy and/or combo. Use the !help command for more information.'

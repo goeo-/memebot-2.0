@@ -36,7 +36,7 @@ async def find_map(criteria):
 
     # only care about EZ, HD, HR, DT, HT, FL, TD
     actual_mods = criteria.mods & 1374
-    filter_mods = criteria.mods & (ModFlag.DoubleTime + ModFlag.HalfTime + ModFlag.HardRock + ModFlag.Easy)
+    filter_mods = criteria.mods & (ModFlag.DoubleTime | ModFlag.HalfTime | ModFlag.HardRock | ModFlag.Easy)
 
     if criteria.mods:
         if criteria.mods == -1: # NOMOD criteria
@@ -45,7 +45,7 @@ async def find_map(criteria):
             clauses.append((Map.enabled_mods == 0))
         else:
             clauses.append((Map.enabled_mods.bin_and(actual_mods) == actual_mods))
-        
+
         # don't recommend touchscreen plays unless explicitly asked for
         if not has_mod(criteria.mods, ModFlag.TouchDevice):
             clauses.append((Map.enabled_mods.bin_and(ModFlag.TouchDevice) == 0))
@@ -100,10 +100,10 @@ async def find_map(criteria):
             try:
                 result = await Database().objects.get(query)
             except Map.DoesNotExist:
-                raise CouldNotFindMapException()
+                raise CouldNotFindMapException
             await Database().objects.create(Recommended, beatmap_id=result.beatmap_id, mods=result.enabled_mods,
                                             username=criteria.user, date=datetime.now())
-            
+
         # check if in top plays of user, if in there continue
         already_in_top_plays = False
 
@@ -114,7 +114,7 @@ async def find_map(criteria):
                 break
         if already_in_top_plays:
             continue
-            
+
         return result.beatmap_id, result.enabled_mods, await future_you(criteria.user,
                                                                         result.beatmap_id,
                                                                         result.enabled_mods)
@@ -123,4 +123,6 @@ async def find_map(criteria):
 class CouldNotFindMapException(Exception):
     pass
 class InvalidDateException(Exception):
+    pass
+class InvalidNumberException(Exception):
     pass

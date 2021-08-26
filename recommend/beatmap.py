@@ -14,7 +14,7 @@ def bpm_for_mods(bpm, mods_enabled):
         return int(bpm * 1.5)
     else:
         return int(bpm)
-        
+
 
 async def get_beatmap_by_id(beatmap_id):
     beatmap = await OsuAPI().call("get_beatmaps", {"b": beatmap_id, "m": 0})
@@ -68,6 +68,6 @@ class Beatmap:
             round(self.ar, 2),
             round(self.od, 2)
         )
-        
+
 
         return message
