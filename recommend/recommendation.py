@@ -49,4 +49,3 @@ class Recommendation(Beatmap):
             round(self.pp_99, 2),
             round(self.pp_100, 2)
         )
-
