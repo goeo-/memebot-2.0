@@ -1,5 +1,5 @@
 from parsers.recommendation_criteria import parse_criteria
-from recommend.maps import CouldNotFindMapException, InvalidDateException
+from recommend.maps import CouldNotFindMapException, InvalidDateException, InvalidNumberException
 from recommend.recommendation import Recommendation
 from recommend.target import NoPlaysException
 
@@ -14,4 +14,6 @@ async def handler(user, message):
         return 'Please play a few maps and try again!'
     except InvalidDateException:
         return 'Invalid date format! Try 2020-01-01, 2020-01 or 2020'
+    except InvalidNumberException:
+        return 'Invalid number in criteria'
     return str(recommendation)

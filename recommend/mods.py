@@ -8,7 +8,7 @@ mods_list = ['NF', 'EZ', 'TD', 'HD', 'HR', 'SD', 'DT', 'RX', 'HT', 'NC', 'FL', '
 
 
 def stringify_mods(mods_enabled):
-    mods = [name for index, name in enumerate(mods_list) if 2 ** index & mods_enabled]
+    mods = [name for index, name in enumerate(mods_list) if 1 << index & mods_enabled]
     if "NC" in mods:
         mods.remove("DT")
     return "".join(mods)
@@ -16,7 +16,7 @@ def stringify_mods(mods_enabled):
 
 def modsify_string(mod_string):
     mod_string = mod_string.strip("-+~|").upper()
-    return sum([2 ** mods_list.index(mod_string[i:i + 2]) for i in range(0, len(mod_string), 2)])
+    return sum([1 << mods_list.index(mod_string[i:i + 2]) for i in range(0, len(mod_string), 2)])
 
 
 def has_mod(mods_enabled, mod):
@@ -38,7 +38,7 @@ class ModFlag(IntFlag):
     Autoplay       = 2048
     SpunOut        = 4096
     Relax2         = 8192  # Autopilot
-    Perfect        = 16384 # Only set along with SuddenDeath. i.e: PF only gives 16416  
+    Perfect        = 16384 # Only set along with SuddenDeath. i.e: PF only gives 16416
     Key4           = 32768
     Key5           = 65536
     Key6           = 131072
