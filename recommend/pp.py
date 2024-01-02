@@ -1,7 +1,7 @@
 import aiofiles
 import aiofiles.os
 import aiohttp
-from oppai import *
+from rosu_pp_py import Beatmap, Calculator
 
 from singletons.config import Config
 
@@ -31,69 +31,75 @@ async def ensure_map_exists(beatmap_id):
 async def get_pp_spread(beatmap_id, enabled_mods, combo=None):
     # get spread (95, 98, 99, 100 acc pps)
     await ensure_map_exists(beatmap_id)
-    ez = ezpp_new()
-    ezpp_set_autocalc(ez, 1)
-    ezpp_dup(ez, '%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+    map = Beatmap(path='%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+    calc = Calculator()
 
     if enabled_mods & 4:
-        ezpp_set_mods(ez, enabled_mods ^ 64)
-    ezpp_set_mods(ez, enabled_mods)
+        calc.set_mods(enabled_mods ^ 64)
+
+    calc.set_mods(enabled_mods)
 
     if combo:
-        ezpp_set_combo(ez, combo)
+        calc.set_combo(combo)
 
-    ezpp_set_accuracy_percent(ez, 95)
-    pp95 = ezpp_pp(ez)
-    ezpp_set_accuracy_percent(ez, 98)
-    pp98 = ezpp_pp(ez)
-    ezpp_set_accuracy_percent(ez, 99)
-    pp99 = ezpp_pp(ez)
-    ezpp_set_accuracy_percent(ez, 100)
-    pp100 = ezpp_pp(ez)
-    stars = ezpp_stars(ez)
-    ar = ezpp_ar(ez)
-    od = ezpp_od(ez)
-    ezpp_free(ez)
+    calc.set_acc(95)
+    pp95 = calc.performance(map).pp
+    calc.set_acc(98)
+    pp98 = calc.performance(map).pp
+    calc.set_acc(99)
+    pp99 = calc.performance(map).pp
+    calc.set_acc(100)
+    pp100 = calc.performance(map).pp
+    diff = calc.difficulty(map)
+    stars = diff.stars
+    ar = diff.ar
+    od = diff.od
+
     return pp95, pp98, pp99, pp100, stars, ar, od
 
 
 async def get_pp(beatmap_id, enabled_mods, accuracy, combo=None):
     # returns total_pp for a specific accuracy
     await ensure_map_exists(beatmap_id)
-    ez = ezpp_new()
-    ezpp_set_autocalc(ez, 1)
-    ezpp_dup(ez, '%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+    map = Beatmap(path='%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+    calc = Calculator()
 
     if enabled_mods & 4:
-        ezpp_set_mods(ez, enabled_mods ^ 64)
-    ezpp_set_mods(ez, enabled_mods)
+        calc.set_mods(enabled_mods ^ 64)
+
+    calc.set_mods(enabled_mods)
 
     if combo:
-        ezpp_set_combo(ez, combo)
+        calc.set_combo(combo)
 
-    ezpp_set_accuracy_percent(ez, accuracy)
-    pp = ezpp_pp(ez)
-    stars = ezpp_stars(ez)
-    ar = ezpp_ar(ez)
-    od = ezpp_od(ez)
-    ezpp_free(ez)
+    calc.set_acc(accuracy)
+    pp = calc.performance(map).pp
+    diff = calc.difficulty(map)
+    stars = diff.stars
+    ar = diff.ar
+    od = diff.od
     return pp, stars, ar, od
 
 
 async def get_pps(beatmap_id, enabled_mods, maxcombo, countmiss, count50, count100):
     # returns total_pp, aim_pp, speed_pp, acc_pp
     await ensure_map_exists(beatmap_id)
-    ez = ezpp_new()
-    ezpp_set_mods(ez, enabled_mods)
+    map = Beatmap(path='%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
+    calc = Calculator()
+
+    if enabled_mods & 4:
+        calc.set_mods(enabled_mods ^ 64)
+
+    calc.set_mods(enabled_mods)
 
     if maxcombo:
-        ezpp_set_combo(ez, maxcombo)
+        calc.set_combo(maxcombo)
     if countmiss:
-        ezpp_set_nmiss(ez, countmiss)
+        calc.set_n_misses(countmiss)
     if count100 and count50:
-        ezpp_set_accuracy(ez, count100, count50)
+        calc.set_n100(count100)
+        calc.set_n50(count50)
 
-    ezpp(ez, '%s/%s.osu' % (Config()['oppai']['map_dir'], beatmap_id))
-    ret = (ezpp_pp(ez), ezpp_aim_pp(ez), ezpp_speed_pp(ez), ezpp_acc_pp(ez))
-    ezpp_free(ez)
+    perf = calc.performance(map)
+    ret = (perf.pp, perf.pp_aim, perf.pp_speed, perf.pp_acc)
     return ret

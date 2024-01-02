@@ -5,3 +5,4 @@ oppai==3.3.0
 peewee==2.10.2
 peewee-async==0.5.12
 aiomysql==0.0.20
+rosu-pp-py==0.9.4
