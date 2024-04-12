@@ -143,7 +143,7 @@ async def send_message(target, message):
 
     async with message_send_lock:
         bot.send("PRIVMSG", target=target, message=message)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.2)
 
 
 # noinspection PyUnusedLocal
@@ -177,6 +177,9 @@ async def test_message(nick, target, message, **kwargs):
         target,
         message
     ))
+
+    if message.startswith('!redirect') and nick == 'goeo_':
+        return await send_message(message[10:], "Thank you for using goeobot! As you might have noticed, thanks to your support, we've been granted a bot account. We highly recommend friending the bot account now, and unfriending goeo_ if you prefer. The bot's functionality is unchanged, but please send your commands over here.")
 
     # only handle the message if it's a command
     if message.startswith(config["bot"]["prefix"]):
